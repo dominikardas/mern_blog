@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { getPostBySlug, getPostById } from '../../../actions/postActions';
 import PropTypes from 'prop-types';
 
+import moment from 'moment';
+
 export class Post extends Component {
 
     componentDidMount() {
@@ -16,7 +18,7 @@ export class Post extends Component {
         else if (id)
             this.props.getPostById(id);
 
-        // document.title = this.props.posts.posts.title + ' - MERN Blog';
+        document.title = this.props.posts.posts.title + ' - MERN Blog';
     }
     
     createMarkup(html) {
@@ -39,12 +41,13 @@ export class Post extends Component {
 
                             <div className="l-post-info">  
                                 <div className="l-info_author">{authorName}</div>
-                                <div className="l-info_date">{publishedAt}</div>
+                                <div className="l-info_date">{ moment(publishedAt).format('DD.MM.yyyy') } </div>
                             </div>
 
                             <div>
                                 <span>
-                                    <img loading="lazy" alt="..." src={postImage} />
+                                    <img loading="lazy" alt="Not Found" src={postImage} onError={(e)=>{e.target.onerror = null; e.target.src='/assets/img/not-found.png'}} />
+                                    
                                 </span>
                             </div>
 
@@ -52,6 +55,20 @@ export class Post extends Component {
                                 {content}
                             </div> */}
                             <div dangerouslySetInnerHTML={this.createMarkup(content)} className="l-post-content" />
+                            
+                            { (tags.length > 0) ?                                
+                                <div className="l-post-tags">
+                                    <h3>Tags</h3>
+                                    <div>
+                                        { tags.map( (tag) => {
+                                            return (
+                                                <span>{ tag }</span>
+                                            );
+                                        })}
+                                    </div>
+                                </div>                                
+                                : null
+                            }
                         </div>
                     </div>
                 ))}

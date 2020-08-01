@@ -4,7 +4,8 @@ import Posts from './posts/PostsPreview';
 
 export class Category extends Component {
     render() {
-        const { categoryName } = this.props.match.params;
+        let { categoryName } = this.props.match.params;
+        categoryName = categoryName[0].toUpperCase() + categoryName.toLowerCase().slice(1);
         return (
             <div className="c-container-content">
                 <Posts category={ categoryName } />

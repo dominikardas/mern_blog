@@ -10,6 +10,8 @@ const auth = require('../../middleware/auth');
 
 const router = express.Router();
 
+const postsPerPage = 4;
+
 // Post Model
 const Post = require('../../models/Post');
 const Category = require('../../models/Category');
@@ -19,39 +21,90 @@ const Category = require('../../models/Category');
 // @auth   Private - admin
 router.get('/', [auth.isLoggedIn, auth.isAdmin], (req, res) => {
 
-    // Fetch all posts from DB
-    Post.find()
-        .sort( { publishedAt: -1 } )        // Sort by published date
-        .then(items => res.json(items));
+    const page = req.query.page ? req.query.page - 1 : 0;
+
+    Post.count()
+        .then(postsCount => {        
+
+            // Fetch all posts from DB
+            Post.find()
+                .sort( { publishedAt: -1 } )        // Sort by published date
+                .skip(page * postsPerPage)
+                .limit(postsPerPage)
+                .then(posts => res.json(
+                    { 
+                        posts,
+                        postsCount,
+                        postsPerPage
+                        
+                    }
+                ))
+                .catch(err => res.status(400).json( { success: false } ));        
+        })
 });
 
 // @route  GET api/posts/published
 // @desc   Get all published posts
 router.get('/published', (req, res) => {
 
+    const page = req.query.page ? req.query.page - 1 : 0;
+
     const query = {
         published: true
     }
 
-    // Fetch all posts from DB
-    Post.find(query)
-        .sort( { publishedAt: -1 } )        // Sort by published date
-        .then(items => res.json(items));
+    Post.count(query)
+        .then(postsCount => {      
+
+            // Fetch all posts from DB
+            Post.find(query)
+                .sort( { publishedAt: -1 } )        // Sort by published date
+                .skip(page * postsPerPage)
+                .limit(postsPerPage)
+                .then(posts => res.json(
+                    { 
+                        posts,
+                        postsCount,
+                        postsPerPage                        
+                    }
+                ))
+                .catch(err => res.status(400).json( { success: false } ));        
+        })
 });
 
 // @route  GET api/posts/findByCategory/:categoryName
 // @desc   Get all posts from given category
 router.get('/findByCategory/:categoryName', (req, res) => {
 
+    const page = req.query.page ? req.query.page - 1 : 0;
+
     const query = {
         categoryName: req.params.categoryName
     };
 
     // Find all posts from given category
-    Post.find(query)
-        .sort( { publishedAt: -1 } )
-        .then (posts => res.json(posts))
-        .catch(err => res.status(400).json( { success: false } ));
+    // Post.find(query)
+    //     .sort( { publishedAt: -1 } )
+    //     .then (posts => res.json(posts))
+    //     .catch(err => res.status(400).json( { success: false } ));
+
+    Post.count(query)
+        .then(postsCount => {      
+
+            // Fetch all posts from DB
+            Post.find(query)
+                .sort( { publishedAt: -1 } )        // Sort by published date
+                .skip(page * postsPerPage)
+                .limit(postsPerPage)
+                .then(posts => res.json(
+                    { 
+                        posts,
+                        postsCount,
+                        postsPerPage                        
+                    }
+                ))
+                .catch(err => res.status(400).json( { success: false } ));      
+        })
 });
 
 // @route  GET api/posts/findBySlug/:slug
@@ -91,13 +144,12 @@ router.post('/', [auth.isLoggedIn], (req, res) => {
 
     const data = req.body;
 
-    if (!data.title     || !data.smallDesc || !data.content || 
+    if (!data.title     || !data.content || 
         !data.postImage || !data.authorName || !data.categoryName) {
-        res.status(400).json( { msg: 'Please, include all parameters' });
-        return;
+        return res.status(400).json( { msg: 'Please, include all parameters' });
     }
 
-    //<h1> <h2> <h3> <b> <i> <u> <a> <br> <p> <img> <div> <ul> <ol> <li>
+    // <h1> <h2> <h3> <b> <i> <u> <a> <br> <p> <img> <div> <ul> <ol> <li>
     // Sanitize the input
     const content = sanitizeHtml(data.content, {
         allowedTags: ['h1', 'h2', 'h3', 'b', 'i', 'u', 'a', 'br', 'p', 'div', 'ul', 'ol', 'li']
@@ -109,13 +161,10 @@ router.post('/', [auth.isLoggedIn], (req, res) => {
     slug = slug.replace(/[^A-Za-z0-9\-]/g,"");
     slug += '-' + Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-    // console.log(slug);
     // Check if the category is valid
     Category.findOne( { categoryName: data.categoryName } )
         .then(item => {
-            console.log(item);
             if (!item) {
-                console.log('scam');
                 return res.status(400).json( { msg: 'Invalid category' } );
             }
         })
@@ -127,7 +176,6 @@ router.post('/', [auth.isLoggedIn], (req, res) => {
     const newPost = new Post({
         title: data.title,                                                      //'Test Title',
         slug,                                                                   //'test-slug-vp94mgmnavxpgid6o6vho',
-        smallDesc: data.smallDesc,                                              //'Test Description',
         content,                                                                //'<h1>Hello World!</h1>',
         postImage: data.postImage,                                              //'NULL',
         authorName: data.authorName,                                            //'Dominik',
@@ -137,11 +185,9 @@ router.post('/', [auth.isLoggedIn], (req, res) => {
 
     // Save to DB
     newPost.save()
-        .then(item => 
-            
+        .then(item =>             
             res.json( { msg: 'Post submitted for revieew' } )
         );
-            // res.json(item));
 });
 
 // @route  POST api/posts/publish/:id

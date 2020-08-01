@@ -19,10 +19,6 @@ const PostSchema = new Schema({
         type: Date,
         default: Date.now()
     },
-    smallDesc: {
-        type: String,
-        required: true
-    },
     content: {
         type: String,
         required: true

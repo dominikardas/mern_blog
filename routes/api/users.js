@@ -17,15 +17,30 @@ const router = express.Router();
 // User Model
 const User = require('../../models/User');
 
+const usersPerPage = 10;
+
 // @route  GET api/users
 // @desc   Get all users
 // @access Private - admin
 router.get('/', [auth.isLoggedIn, auth.isAdmin], (req, res) => {
 
-    // Fetch all users from DB
-    User.find()
-        .select('-password')
-        .then(items => res.json(items));
+    const page = req.query.page ? req.query.page - 1 : 0;
+
+    User.count()
+        .then(usersCount => {
+            // Fetch all users from DB
+            User.find()
+                .select('-password')
+                .skip(page * usersPerPage)
+                .limit(usersPerPage)
+                .then(users => res.json(
+                    {
+                        users,
+                        usersCount,
+                        usersPerPage
+                    }
+                ));
+        })
 });
 
 // @route  GET api/users/findById/:id
@@ -153,7 +168,7 @@ router.delete('/:id', [auth.isLoggedIn, auth.isAdmin], (req, res) => {
     // Find a user by posted id
     // If a user with given id is found, delete it from the database
     User.remove(query)
-        .then (user => res.json( { success: true } ))
+        .then (user => res.json( { msg: 'User deleted' } ))
         .catch(err => res.status(400).json( { success: false } ));
 });
 

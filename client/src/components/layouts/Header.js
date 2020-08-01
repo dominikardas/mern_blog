@@ -4,25 +4,45 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import Logout from '../pages/users/Logout';
+import { getAllCategories } from '../../actions/categoryActions';
 
 export class Header extends Component {
 
-    componentDidMount() {     
+    componentDidMount() {
+        this.props.getAllCategories();
+    }
 
+    toggleMenu = (e) => {
+        document.querySelector('.l-navbar').classList.toggle('is-active');
     }
 
     render() {
 
-        const { isAuthenticated, user } = this.props.auth;
-        var isAdmin = (user !== null && user.isAdmin);
+        let isAuthenticated, user, isAdmin;
+        if (this.props.auth) {
+            isAuthenticated = this.props.auth.isAuthenticated;
+            user = this.props.auth.user;
+            isAdmin = (user !== null && user.isAdmin);
+        }
+        // const { isAuthenticated, user } = this.props.auth;
+        // var isAdmin = (user !== null && user.isAdmin);
 
         const authLinks = (
             <React.Fragment>
                 <li>
-                    <a href="/designer">Create post</a>
-                </li>
-                <li>
-                    <Logout />
+                    <span>User Panel</span>
+
+                    <ul className="submenu">
+                        <li>
+                            <a href="/designer">Create post</a>
+                        </li>
+                        <li>
+                            <a href="#">Settings</a>
+                        </li>
+                        <li>
+                            <Logout />
+                        </li>
+                    </ul>
                 </li>
             </React.Fragment>
         ); 
@@ -31,10 +51,7 @@ export class Header extends Component {
             <React.Fragment>  
                 <li>
                     <a href="/users/login" className="btn btn-navbar btn-login">Sign In</a>
-                </li> 
-                {/* <li>
-                    <a href="/users/register" className="btn btn-navbar btn-register">Register</a>
-                </li> */}
+                </li>
             </React.Fragment>
         );
 
@@ -50,28 +67,23 @@ export class Header extends Component {
             <div className="c-container-header">
                 <nav className="l-header">
                     <a href="/"><img src="/logo.png" className="l-logo" /></a>
-                    <ul>
-                        <li>
-                            <a href="/category/news">News</a>
-                        </li>
-                        <li>
-                            <a href="/category/lifestyle">Lifestyle</a>
-                        </li>
-                        <li>
-                            <a href="/category/bussiness">Bussiness</a>
-                        </li>
-                        <li>
-                            <a href="/category/tech">Tech</a>
-                        </li>
-                        { isAdmin ? adminLinks : null }
-                        { isAuthenticated ? authLinks : guestLinks }
-                        {/* <li>
-                            { isAuthenticated ? <span className="l-name">Welcome {user.username}!</span> : <span></span>  }
-                        </li> */}
-                    </ul>
+                    <div className="l-navbar">
+                        <ul>
+                            { !this.props.loading ?
+                                this.props.categories.map( (category) => {
+                                    return (
+                                        <li key={ category._id }>
+                                            <a href={ "/category/" + category.categoryURI }>{category.categoryName}</a>
+                                        </li>
+                                    )
+                                }) : null
+                            }
+                            { isAdmin ? adminLinks : null }
+                            { isAuthenticated ? authLinks : guestLinks }
+                        </ul>
+                    </div>
                     { isAuthenticated ? <span className="l-name">Welcome {user.username}!</span> : <span></span>  }
-                    {/* <img src="/logo.png" className="l-user-logo" /> */}
-                    <div className="l-menu-btn"><span className="ico-navigation-menu ico-3x"></span></div>
+                    <div className="l-menu-btn"><button onClick={this.toggleMenu}><span className="ico-navigation-menu ico-3x"></span></button></div>
                 </nav>
             </div>
         )
@@ -79,11 +91,25 @@ export class Header extends Component {
 }
 
 Header.propTypes = {
-    auth: PropTypes.object.isRequired
+    auth: PropTypes.object,
+    categories: PropTypes.array,
+
+    getAllCategories: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state) => ({
-    auth: state.auth
-});
+function mapStateToProps(state) {
+    if (state.auth !== null && state.categories.categories !== null) {
+        return {            
+            auth: state.auth,
+            categories: state.categories.categories,
+            loading: false
+        };
+    }
+    else {
+        return {
+            loading: true
+        }
+    }
+}
 
-export default connect(mapStateToProps, null)(Header);
+export default connect(mapStateToProps, { getAllCategories })(Header);

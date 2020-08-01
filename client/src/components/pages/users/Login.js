@@ -16,6 +16,10 @@ export class Login extends Component {
         this.state = { array: [] };
     }
 
+    componentDidMount() {
+        document.title = 'Log In - MERN Blog';
+    }
+
     componentDidUpdate(prevProps) {
 
         const { error } = this.props;
@@ -51,9 +55,7 @@ export class Login extends Component {
             password
         };
 
-        // console.log(newUser);
-
-        // Attempt to register
+        // Attempt to login
         this.props.login(user);
     }
 

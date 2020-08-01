@@ -7,14 +7,19 @@ import {
     LOGOUT_SUCCESS,  
     REGISTER_SUCCESS, 
     REGISTER_FAIL,  
-    GET_ALL_USERS  
+    GET_ALL_USERS,
+    DELETE_USER
 } from '../actions/types';
 
 const initialState = {
     isAuthenticated: false,
     loading: false,
+
     user: null,
-    users: null
+    users: null,
+
+    usersCount: null,
+    usersPerPage: null
 }
 
 export default function(state = initialState, action) {
@@ -49,7 +54,9 @@ export default function(state = initialState, action) {
 
             return {
                 ...state,
-                users: action.payload.data,
+                users: action.payload.data.users,
+                usersCount: action.payload.data.usersCount,
+                usersPerPage: action.payload.data.usersPerPage,
                 loading: false
             };
         
@@ -64,6 +71,13 @@ export default function(state = initialState, action) {
                 isAuthenticated: false,
                 loading: false
             };
+
+        case DELETE_USER:
+            
+            return {
+                ...state, 
+                users: state.users.filter(user => user._id !== action.payload.id)
+            }
 
         default:
             return state;

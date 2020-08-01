@@ -17,36 +17,34 @@ import { trackPromise } from 'react-promise-tracker';
 
 import { returnErrors } from './errorActions';
 
-export const getPosts = () => dispatch => {
+export const getPosts = (page = 1) => dispatch => {
 
     dispatch(setPostsLoading());
 
     // Get data from local API
-    trackPromise(
     axios
-        .get('/api/posts/published')
-        .then( res => 
+        .get(`/api/posts/published?page=${page}`)
+        .then( res =>
             dispatch({
                 type: GET_POSTS,
                 payload: { data: res.data }
-            })    
-        )
-    );
+            })  
+        );
 
     // return {
     //     type: GET_POSTS
     // };
 }
-export const getPostsByCategory = (categoryName) => dispatch => {
+export const getPostsByCategory = (categoryName, page = 1) => dispatch => {
 
     dispatch(setPostsLoading());
 
-    var category = categoryName[0].toUpperCase() + categoryName.toLowerCase().slice(1);
-    console.log(category);
+    // var category = categoryName[0].toUpperCase() + categoryName.toLowerCase().slice(1);
+    // console.log(category);
 
     // Get data from local API
     axios
-        .get(`/api/posts/findByCategory/${category}`)
+        .get(`/api/posts/findByCategory/${categoryName}/?page=${page}`)
         .then( res => 
             dispatch({
                 type: GET_POSTS_BY_CAT,
@@ -90,7 +88,8 @@ export const submitPost = (post) => (dispatch) => {
         content: post.content,
         postImage: post.postImage,
         authorName: post.authorName,
-        categoryName: post.categoryName
+        categoryName: post.categoryName,
+        tags: post.tags
     });
 
     axios.post('/api/posts', body, config)
@@ -106,14 +105,14 @@ export const submitPost = (post) => (dispatch) => {
 }
 
 // Admin actions
-export const getAllPosts = () => (dispatch) => {
+export const getAllPosts = (page = 1) => (dispatch) => {
 
-    axios.get('/api/posts')
-        .then(res => 
+    axios.get(`/api/posts?page=${page}`)
+        .then(res => {console.log(res)
             dispatch({
                 type: GET_ALL_POSTS,
                 payload: { data: res.data }
-            })
+            })}
         )
         .catch(err => console.log(err));
 
@@ -179,17 +178,17 @@ export const publishPost = (id) => (dispatch) => {
         })
         .catch(err => {
 
-            // console.log(err);
+            console.log(err);
             
-            // dispatch(returnErrors(err.data.msg, err.data.errors, err.status, 'PUBLISH_POST'));
+            dispatch(returnErrors(err.data.msg, err.data.errors, err.status, 'PUBLISH_POST'));
 
-            dispatch({
-                type: PUBLISH_POST,
-                payload: {
-                    id,
-                    published: true
-                }
-            })
+            // dispatch({
+            //     type: PUBLISH_POST,
+            //     payload: {
+            //         id,
+            //         published: true
+            //     }
+            // })
         });
 }
 
@@ -212,15 +211,17 @@ export const unpublishPost = (id) => (dispatch) => {
 
     })
     .catch(err => {
-        
-        // dispatch(returnErrors(err.data.msg, err.data.errors, err.status, 'UNPUBLISH_POST'));
 
-        dispatch({
-            type: UNPUBLISH_POST,
-            payload: {
-                id,
-                published: false
-            }
-        })
+        console.log(err);
+        
+        dispatch(returnErrors(err.data.msg, err.data.errors, err.status, 'UNPUBLISH_POST'));
+
+        // dispatch({
+        //     type: UNPUBLISH_POST,
+        //     payload: {
+        //         id,
+        //         published: false
+        //     }
+        // })
     });
 }

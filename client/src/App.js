@@ -30,8 +30,6 @@ class App extends React.Component {
 
   componentDidMount() {
     store.dispatch(loadUser());
-
-    // document.title = 'Homepage - MERN Blog';
   }
 
   render() {

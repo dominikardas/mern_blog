@@ -13,7 +13,10 @@ import {
 
 const initialState = {
     posts: [],
-    loading: false
+    loading: false,
+
+    postsCount: null,
+    postsPerPage: null
 }
 
 export default function(state = initialState, action) {
@@ -24,14 +27,18 @@ export default function(state = initialState, action) {
         case GET_ALL_POSTS:
             return {
                 ...state,
-                posts: action.payload.data,
+                posts: action.payload.data.posts,
+                postsCount: action.payload.data.postsCount,
+                postsPerPage: action.payload.data.postsPerPage,
                 loading: false
             };
 
         case GET_POSTS_BY_CAT:
             return {
                 ...state,
-                posts: action.payload.data,
+                posts: action.payload.data.posts,
+                postsCount: action.payload.data.postsCount,
+                postsPerPage: action.payload.data.postsPerPage,
                 loading: false
             };
 
@@ -60,7 +67,7 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 posts: state.posts.map(
-                    post => post.id === action.payload.id 
+                    post => post._id === action.payload.id 
                             ? { ...post, published: action.payload.published } 
                             : post
                 ) 

@@ -127,22 +127,6 @@ export const logout = () => (dispatch) => {
         .catch(err => console.log(err));
 }
 
-// export const csrf = () => {    
-
-//     const config = {
-//         headers: {}
-//     }
-
-//     axios.get('/api/auth/csrf')
-//         .then(res => {
-//             console.log(res.data.csrfToken);
-//             config.headers['X-CSRF-Token'] = res.data.csrfToken;
-//         })
-//         .catch(err => console.log(err));
-
-//     return config;
-// }
-
 export const setAuthLoading = () => {
     return {
         type: USER_LOADING
@@ -150,10 +134,10 @@ export const setAuthLoading = () => {
 }
 
 // Admin actions
-export const getAllUsers = () => (dispatch) => {
+export const getAllUsers = (page = 1) => (dispatch) => {
 
     // Get all users from api
-    axios.get('/api/users')
+    axios.get(`/api/users?page=${page}`)
         .then(res => {
             dispatch({
                 type: GET_ALL_USERS,
@@ -177,15 +161,16 @@ export const deleteUser = (id) => (dispatch) => {
             dispatch(returnErrors(res.data.msg, null, res.status, 'DELETE_USER'));
 
             dispatch({
-                type: DELETE_USER
+                type: DELETE_USER,
+                payload: { id }
             });
         })
         .catch(err => {
 
             dispatch(returnErrors(err.data.msg, err.data.errors, err.status, 'DELETE_USER'));
 
-            dispatch({
-                type: DELETE_USER
-            });    
+            // dispatch({
+            //     type: DELETE_USER
+            // });    
         });
 }

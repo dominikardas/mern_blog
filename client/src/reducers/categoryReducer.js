@@ -16,19 +16,21 @@ export default function(state = initialState, action) {
         case GET_CATEGORIES:
             return {
                 ...state,
-                categories: action.payload.data,
+                categories: action.payload.categories,
                 loading: false
             }
 
         case ADD_CATEGORY:
             return {
                 ...state,
+                categories: [...state.categories, action.payload.data], //state.categories.push(action.payload.data),
                 loading: false
             }
             
         case DELETE_CATEGORY:
             return {
                 ...state,
+                categories: state.categories.filter(category => category._id !== action.payload.id),
                 loading: false
             }
 

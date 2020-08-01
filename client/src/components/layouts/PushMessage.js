@@ -5,7 +5,7 @@ export class PushMessage extends Component {
     render() {
 
         return (
-            <div id="push-message">
+            <div key={Math.random()} id="push-message">
                 { this.props.msg }
             </div>
         )

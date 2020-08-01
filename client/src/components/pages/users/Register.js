@@ -17,6 +17,7 @@ export class Register extends Component {
     }
 
     componentDidMount() {
+        document.title = 'Register - MERN Blog';
     }
 
     componentDidUpdate(prevProps) {
@@ -32,11 +33,6 @@ export class Register extends Component {
                 this.setState({ msg: null });
             }
         }
-
-        // if (this.props.auth.isAuthenticated) {
-        //     return <Redirect to="/"  />
-        // }
-
     }
 
     onSubmit = (e) => {
@@ -82,7 +78,6 @@ export class Register extends Component {
 
                 <div className="l-form-container l-form-register">
                     <form onSubmit={this.onSubmit} className="l-form">
-
                         <h1>Register</h1>
 
                         { errors }
@@ -108,8 +103,8 @@ export class Register extends Component {
                         <div className="l-form_input">
                             <input type="submit" name="submit" value="Register" className="btn-register" />
                         </div>
-
                     </form>
+                    <a href="/users/login">Already have an account? Login here!</a>
                 </div>
                 
             </div>

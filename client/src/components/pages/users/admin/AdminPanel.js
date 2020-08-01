@@ -18,6 +18,8 @@ export class AdminPanel extends Component {
         this.props.getAllUsers();
         this.props.getAllCategories();
         this.props.getAllPosts();
+
+        document.title = 'Admin Panel - MERN Blog';
     }
 
     toggleContent = (e) => {
@@ -38,15 +40,20 @@ export class AdminPanel extends Component {
         document.querySelector(target_c).classList.add('is-active');
     }
 
+    toggleExtendedContent = (e) => {
+        e.preventDefault();
+        e.target.nextSibling.classList.toggle('is-active');
+    }
+
     render() {
 
         if (!this.props.loading) {
-            if (this.props.auth) {
-                if (!this.props.auth.isAuthenticated ||
-                    this.props.auth.user === 'NO_USER' ||
-                    !this.props.auth.user.isAdmin)
-                    return <Redirect to="/" />
-            }
+            // if (this.props.auth) {
+            //     if (!this.props.auth.isAuthenticated ||
+            //         this.props.auth.user === 'NO_USER' ||
+            //         !this.props.auth.user.isAdmin)
+            //         return <Redirect to="/" />
+            // }
         }
         else {
             return <div></div>
@@ -54,13 +61,13 @@ export class AdminPanel extends Component {
 
         let users, categories, posts, msg;
         if (this.props.users) {
-            users = <AdminPages.AdminUsers users={this.props.users}/>;
+            users = <AdminPages.AdminUsers users={this.props.users} toggleExtendedContent={this.toggleExtendedContent} />;
         }
         if (this.props.categories) {
-            categories = <AdminPages.AdminCategories categories={this.props.categories} />;
+            categories = <AdminPages.AdminCategories categories={this.props.categories} toggleExtendedContent={this.toggleExtendedContent} />;
         }
         if (this.props.posts) {
-            posts = <AdminPages.AdminPosts posts={this.props.posts} />;
+            posts = <AdminPages.AdminPosts posts={this.props.posts} toggleExtendedContent={this.toggleExtendedContent} />;
         }
         if (this.props.msg) {
             msg = <PushMessage msg={this.props.msg} />
@@ -69,7 +76,7 @@ export class AdminPanel extends Component {
         return (
             <div className="c-container-admin">
 
-                { msg }
+                {msg}
 
                 <div className="l-admin_panel">
                     <div className="l-admin_panel_nav">
@@ -77,7 +84,7 @@ export class AdminPanel extends Component {
                             <ul>
                                 <li>
                                     <span className="ico-users-alt-3 ico-2x"></span>
-                                    <a className="js-btn-admin_cats" data-href="users" onClick={ this.toggleContent }>Users</a>
+                                    <a className="js-btn-admin_cats" data-href="users" onClick={ this.toggleContent.bind(this) }>Users</a>
                                 </li>
                                 <li>
                                     <span className="ico-sort ico-2x"></span>
@@ -86,6 +93,10 @@ export class AdminPanel extends Component {
                                 <li className="is-active">
                                     <span className="ico-page ico-2x"></span>
                                     <a className="js-btn-admin_cats" data-href="posts" onClick={ this.toggleContent.bind(this) }>Posts</a>
+                                </li>
+                                <li>
+                                    <span className="ico-ui-add ico-2x"></span>
+                                    <a href="/designer" target="_blank" rel="noopener noreferrer">Create Post</a>
                                 </li>
                             </ul>
                         </nav>
@@ -105,11 +116,11 @@ export class AdminPanel extends Component {
 AdminPanel.propTypes = {
 
     loading: PropTypes.bool.isRequired,
-    auth: PropTypes.object.isRequired,
+    auth: PropTypes.object,
 
-    users: PropTypes.array.isRequired,
-    categories: PropTypes.array.isRequired,
-    posts: PropTypes.array.isRequired,
+    users: PropTypes.array,
+    categories: PropTypes.array,
+    posts: PropTypes.array,
 
     getAllUsers: PropTypes.func.isRequired,
     getAllCategories: PropTypes.func.isRequired,

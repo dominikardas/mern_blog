@@ -53,7 +53,7 @@ router.delete('/:id', [auth.isLoggedIn, auth.isAdmin], (req, res) => {
     // Find a category by posted id
     // If a category with given id is found, delete it from the database
     Category.deleteOne(query)
-            .then(res.json( { success: true } ))
+            .then(res.json( { msg: 'Category deleted' } ))
             .catch(err => res.status(400).json( { success: false } ));
 });
 
