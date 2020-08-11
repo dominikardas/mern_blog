@@ -45,7 +45,7 @@ router.get('/', [auth.isLoggedIn, auth.isAdmin], (req, res) => {
 
 // @route  GET api/users/findById/:id
 // @desc   Find a user by id
-router.get('/findById/:id', (req, res) => {
+router.get('/findById/:id', [auth.isLoggedIn], (req, res) => {
 
     User.findById(req.params.id)
         .then(user => res.json(user))

@@ -18,6 +18,7 @@ import About from './components/pages/About';
 
 import Login from './components/pages/users/Login';
 import Register from './components/pages/users/Register';
+import Settings from './components/pages/users/Settings';
 
 import Designer from './components/pages/posts/Designer';
 
@@ -57,6 +58,9 @@ class App extends React.Component {
 
         { /* Register Page */ }
         <Route exact path="/users/register" component={ Register } />
+
+        { /* Account Settings */ }
+        <Route exact path="/users/settings" component={ Settings } />
 
         { /* Designer Page */ }
         <Route exact path="/designer" component={ Designer } />

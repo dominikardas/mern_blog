@@ -83,25 +83,29 @@ export class Register extends Component {
                         { errors }
 
                         <div className="l-form_input">
-                            <input onChange={this.onChange} type="text" name="name" placeholder="Full name" />
+                            <label htmlFor="name">Full Name</label>
+                            <input onChange={this.onChange} type="text" name="name" />
                         </div>
 
                         <div className="l-form_input">
-                            <span class="ico-ui-user ico-1x"></span>
-                            <input onChange={this.onChange} type="text" name="username" placeholder="Username" />
+                            {/* <span class="ico-ui-user ico-1x"></span> */}
+                            <label htmlFor="name">Username</label>
+                            <input onChange={this.onChange} type="text" name="username" />
                         </div>
 
                         <div className="l-form_input">
-                            <span class="ico-ui-password ico-1x"></span>
-                            <input onChange={this.onChange} type="password" name="password" placeholder="Password" />
+                            {/* <span class="ico-ui-password ico-1x"></span> */}
+                            <label htmlFor="name">Password</label>
+                            <input onChange={this.onChange} type="password" name="password" />
                         </div>
 
                         <div className="l-form_input">
-                            <input onChange={this.onChange} type="password" name="password_r" placeholder="Repeat password" />
+                            <label htmlFor="name">Repeat password</label>
+                            <input onChange={this.onChange} type="password" name="password_r" />
                         </div>
 
                         <div className="l-form_input">
-                            <input type="submit" name="submit" value="Register" className="btn-register" />
+                            <button type="submit" class="btn btn-register">Register</button>
                         </div>
                     </form>
                     <a href="/users/login">Already have an account? Login here!</a>

@@ -10,7 +10,7 @@ const auth = require('../../middleware/auth');
 
 const router = express.Router();
 
-const postsPerPage = 4;
+const postsPerPage = 6;
 
 // Post Model
 const Post = require('../../models/Post');

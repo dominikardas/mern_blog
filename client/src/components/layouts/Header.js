@@ -37,7 +37,7 @@ export class Header extends Component {
                             <a href="/designer">Create post</a>
                         </li>
                         <li>
-                            <a href="#">Settings</a>
+                            <a href="/users/settings">Settings</a>
                         </li>
                         <li>
                             <Logout />

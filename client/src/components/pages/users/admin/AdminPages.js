@@ -100,8 +100,8 @@ export class AdminCategories extends Component {
                         Create Category
                     </button>
                     <div>
-                        <form className="l-form_admin" onSubmit={(e) => this.submitNewCategory(e)}>
-                            <div className="l-form_admin_input">
+                        <form className="l-form-admin" onSubmit={(e) => this.submitNewCategory(e)}>
+                            <div className="l-form-admin_input">
                                 <label htmlFor="categoryName">Category Name</label>
                                 <input onChange={this.onChange} id="categoryName" type="text" name="categoryName" />
                             </div>

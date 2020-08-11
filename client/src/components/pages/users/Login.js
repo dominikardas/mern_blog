@@ -85,15 +85,17 @@ export class Login extends Component {
                         { errors }
 
                         <div className="l-form_input">
-                            <span class="ico-ui-user ico-1x"></span>
-                            <input onChange={this.onChange} type="text" name="username" placeholder="Username" />
+                            {/* <span class="ico-ui-user ico-1x"></span> */}
+                            <label htmlFor="username">Username</label>
+                            <input onChange={this.onChange} type="text" name="username" />
                         </div>
                         <div className="l-form_input">
-                            <span class="ico-ui-password ico-1x"></span>
-                            <input onChange={this.onChange} type="password" name="password" placeholder="Password" />
+                            {/* <span class="ico-ui-password ico-1x"></span> */}
+                            <label htmlFor="password">Password</label>
+                            <input onChange={this.onChange} type="password" name="password" />
                         </div>
                         <div className="l-form_input">
-                            <input type="submit" name="submit" value="Login" class="btn-login" />
+                            <button type="submit" class="btn btn-login">Login</button>
                         </div>
                     </form>
                     <a href="/users/register">Don't have an account? Register here!</a>
